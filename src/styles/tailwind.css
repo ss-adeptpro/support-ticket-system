@@ -601,6 +601,13 @@ video {
           justify-content: flex-end;
 }
 
+.justify-center{
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
 .justify-between{
   -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
@@ -616,13 +623,21 @@ video {
   gap: 1rem;
 }
 
+.gap-5{
+  gap: 1.25rem;
+}
+
 .bg-red-400{
   --tw-bg-opacity: 1;
   background-color: rgb(248 113 113 / var(--tw-bg-opacity));
 }
 
-.p-5{
-  padding: 1.25rem;
+.p-2{
+  padding: 0.5rem;
+}
+
+.text-center{
+  text-align: center;
 }
 
 .text-2xl{
@@ -637,6 +652,10 @@ video {
 
 .font-bold{
   font-weight: 700;
+}
+
+.capitalize{
+  text-transform: capitalize;
 }
 
 .text-white{
@@ -670,7 +689,7 @@ html, body, #root, .app {
   width: 100%;
   font-family: 'DM Sans', sans-serif;
   --tw-text-opacity: 1;
-  color: rgb(107 114 128 / var(--tw-text-opacity));
+  color: rgb(94 0 0 / var(--tw-text-opacity));
 }
 
 body{

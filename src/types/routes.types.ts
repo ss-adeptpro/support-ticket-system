@@ -6,6 +6,7 @@ export type StringByString = {
 
 export const routes = {
   HOME: 'home',
+  ABOUTUS: 'aboutus',
   LOGIN:'login',
   REGISTER: 'register',
   DASHBOARD: 'dashboard',
