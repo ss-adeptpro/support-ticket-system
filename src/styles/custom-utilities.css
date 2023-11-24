@@ -1,0 +1,20 @@
+@tailwind utilities;
+
+@layer utilities {
+  .sectionContainer {
+    @apply flex flex-col mx-auto w-full items-center gap-y-2 min-h-[300px] 
+  }
+
+  .field {
+    @apply appearance-none border rounded-lg w-full py-2 px-2 leading-tight focus:outline-none resize-none focus:border-gray-400;
+    @apply bg-primary-300 text-white placeholder-white mb-4;
+  }
+  
+  .field-label {
+    @apply .uppercase .font-bold .text-lg .text-grey-darkest .mb-2;
+  }
+  
+  .field-group {
+    @apply .flex .flex-col;
+  }
+}

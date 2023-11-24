@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&family=Montserrat:wght@700&display=swap');
+
+@import "./custom-base.css";
+@import "./custom-components.css";
+@import "./custom-utilities.css";
+
+html, body, #root, .app {
+  height: 100%;
+  width: 100%;
+  font-family: 'DM Sans', sans-serif;
+  @apply text-gray-500;
+}
+
+body {
+  @apply m-auto;
+}
+
+a {
+  @apply transition duration-300 hover:text-black
+}
+
+.linkActive {
+  @apply text-black
+}
+
+.btn {
+  @apply transition p-2 rounded-md bg-red-300 hover:bg-white duration-300 hover:text-black shadow-md
+}
