@@ -1,7 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router";
 import useAuthDetails from "../../hooks/useAuthDetails";
 import { routes } from "../../types/routes.types";
-import { TUserRolesTypes } from "./auth.types";
+import { TUserRoles, TUserRolesTypes } from "./auth.types";
 
 type Props = {
   allowedRoles: TUserRolesTypes;
@@ -12,16 +12,11 @@ const RequiredAuth = ({allowedRoles}: Props) => {
 
   //could be multiple roles - so returning array of roles
   const {roles: loggedUserRoles} = useAuthDetails();
-
-  console.log('loggedUserRoles ', loggedUserRoles);
-    
-  const result = Object.values(allowedRoles).find(
-    (role) => loggedUserRoles.includes(role as string)
-  );
-  
-
   const content = Object.values(allowedRoles).find(
-    (role) => loggedUserRoles.includes(role as string)
+    (role) => {
+      type TRole = Extract<TUserRoles, { type: typeof role }>;
+      return loggedUserRoles.includes(role as TRole)
+    }
   ) ? (
     <Outlet />
   ) : (
