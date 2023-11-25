@@ -12,7 +12,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
 				url: '/auth',
 				method: 'POST',
 				body: { ...credentials },
-        //if taking over > API_ENDPOINT_DEAFULT_TIMEOUTms, something is wrong so abort the request.
+        //if taking over > API_ENDPOINT_DEAFULT_TIMEOUTms, something is wrong with Api so abort the request.
         //this timeout will take priority
         timeout: API_ENDPOINT_DEAFULT_TIMEOUT
 			}),

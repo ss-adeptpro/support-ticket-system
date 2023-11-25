@@ -1,29 +1,59 @@
+import { EntityState, createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import { apiSlice } from "../../api/apiSlice";
 import { API_ENDPOINT_DEAFULT_TIMEOUT } from "../auth/auth.types";
-import { TUsers } from "./users.types";
+import { TUser, TUsers } from "./users.types";
+import { AppState } from "../../store/store";
+import { customTransformUsers, validateApiStatusUsers } from "./users.helpers";
 
+/*
+createEntityAdapter generates a set of reducer functions and selectors for a given entity type based on a schema 
+that defines the shape of the normalized data. The generated reducers include functions for adding, updating, 
+and removing entities and also handle the creation of unique IDs for each entity
+*/
+
+//create a normalized store, indexed by id
+const usersAdapter = createEntityAdapter<TUser>({
+  //data to be indexed by user.id
+  selectId: (user) => user.id,
+
+  // Keep the "all IDs" array sorted based on owner titles
+  sortComparer: (a, b) => a?.id.localeCompare(b?.id),
+})
+
+//adapter by default has initial state of {ids, entities} elements
+const usersinitialState = usersAdapter.getInitialState()
+
+
+const USER_TAG:string  = 'USER'; //tag for caching
+const USER_LIST_TAG:string  = 'USER_LIST'; //tag for caching
 //assign tags for invalidating cache
-const usersApiWithTag = apiSlice.enhanceEndpoints({addTagTypes: ["User"]})
+const usersApiWithTag = apiSlice.enhanceEndpoints({addTagTypes: [USER_TAG]})  //dont assign hardcoded otherwise we get typing error at TYPE_TAG_CONST
 
 //add endpoints for owners
 export const usersApiSlice = usersApiWithTag.injectEndpoints({
   endpoints: builder => ({
-    getUsers: builder.query<TUsers, void>({
+    getUsers: builder.query<EntityState<TUser>, void>({
       query: () => ({
         url: `/users`,
-				validateStatus: (response, result) => {
-          console.log(result,' responseValidate ', response);
-          //without Token request, result comes back with error {message: "UnauthorizedM"}
-          //and response {status:401, ok:false}
-					return response.status === 200 && !result.isError
-				},
-
-        //if taking over > API_ENDPOINT_DEAFULT_TIMEOUTms, something is wrong so abort the request.
-        //this timeout will take priority
+				validateStatus: (response, result) => validateApiStatusUsers(response, result), 
+        //abort the request if timing out. This timeout will take priority
         timeout: API_ENDPOINT_DEAFULT_TIMEOUT
       }),
-      // providesTags: ["User"] //for caching
-    })
+      transformResponse: (responseData: TUsers) => {
+        //fill state with ids and entities
+        return usersAdapter.setAll(usersinitialState, customTransformUsers(responseData));
+      },
+      providesTags: (result:EntityState<TUser> | undefined) => {
+        console.log('result cache ', result)
+				if (result?.ids) {
+					return [
+						{ type: USER_TAG, id: USER_LIST_TAG },
+						...result.ids.map((id) => ({ type: USER_TAG, id })),
+					]
+				} else return [{ type: USER_TAG, id: USER_LIST_TAG }]
+			}
+    })    
+    
   })
 })
 
@@ -31,4 +61,30 @@ export const usersApiSlice = usersApiWithTag.injectEndpoints({
 export const {
   useGetUsersQuery
 } = usersApiSlice
+
+
+//returns the entire result object (not just the data)
+export const selectUsersResult = usersApiSlice.endpoints.getUsers.select()
+
+// Creates memoized selector to get the data
+//createSelector = inputFunction, outputFunction
+const selectUsersData = createSelector(
+  //inputFunction     outputFunction
+  //    ^                    ^
+  selectUsersResult, (usersResult) => usersResult.data // normalized state object with ids & entities
+)
+
+//getSelectors returns selectors (to read data of entity state object) and we rename them with aliases using destructuring
+export const {
+  selectAll: selectAllUsers,
+  selectById: selectUserById,
+  selectIds: selectUserIds
+  // Pass in a selector that returns the users slice of state
+} = usersAdapter.getSelectors((state:AppState) => {
+    //nullish as data could be undefined or null first time.
+    //                    TYPE_TAG_CONST
+    //                       ^
+    return selectUsersData(state) ?? usersinitialState
+  }
+)
 

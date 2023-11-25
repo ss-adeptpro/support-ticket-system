@@ -11,7 +11,7 @@ const DashboardHeader = () => {
 
   return (
     <>
-      <div className="flex w-full items-center text-center justify-center capitalize gap-5">
+      <div className="flex items-center justify-end capitalize gap-5 mb-3 w-full px-3">
         <span className="text-xl font-bold">Welcome {username}</span><span>Status: {status}</span>
       </div>
     </>

@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { API_DEAFULT_TIMEOUT } from './api.types';
-import { getItemFromStorage } from '../helpers/util';
+import { AppState } from '../store/store';
 
 //Creates an api service to use in the application
 export const apiSlice = createApi({
@@ -12,9 +12,9 @@ export const apiSlice = createApi({
         until your api resolves the request(s) or it reaches the browser's default timeout
       */
       timeout: API_DEAFULT_TIMEOUT,  // Set a default timeout in milisec
-      prepareHeaders: (headers) => {
-        // const token2 = getState().auth.token;    //dont access token from redux as we dont get it on 'page refresh'
-        const token = getItemFromStorage('authToken');
+      prepareHeaders: (headers, {getState}) => {
+        const appState = getState() as AppState;
+        const token = appState.auth.accessToken;
         if (token) {
           //set headers to be 'Bearer token'
           headers.set("authorization", `Bearer ${token}`);
@@ -22,6 +22,6 @@ export const apiSlice = createApi({
         return headers;
       }      
     }),
-    // tagTypes: ["Ticket", "User"], //invalidate the cache
+    //  tagTypes: ["Ticket", "User"], //invalidate the cache at the injectEendpoint time
     endpoints: () => ({})
 })

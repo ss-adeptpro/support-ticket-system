@@ -1,7 +1,7 @@
 import { TUserRolesTypes } from "../auth/auth.types"
 
 export type TUser = {
-  id? : string,
+  id : string,
   username: string,
   active: boolean,
   roles: TUserRolesTypes

@@ -16,12 +16,10 @@ export const authSlice  = createSlice({
     //to set the access token
     setCredentials: (state:TAccessToken, action:PayloadAction<TAccessToken>) => {
       state.accessToken = action?.payload?.accessToken ?? null;
-      localStorage.setItem("authToken", JSON.stringify(state.accessToken));
       console.log('Next State ', current(state))
     },
     logOut: (state:TAccessToken) => {
 			state.accessToken = null;
-      localStorage.removeItem("authToken");
 		},
   }
 });

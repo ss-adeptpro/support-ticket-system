@@ -4,5 +4,5 @@
 
 .dashItem {
   @apply flex w-[200px] h-[200px] flex-wrap border rounded-lg p-2 items-center justify-center shadow-lg mt-10 text-lg font-bold;
-  @apply text-primary-300 cursor-pointer hover:bg-primary-300 hover:text-white transition duration-300
+  @apply text-primary-300 cursor-pointer shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl hover:bg-primary-300 hover:text-white;
 }

@@ -2,7 +2,7 @@ import { createSlice, current } from "@reduxjs/toolkit";
 import { AppState } from "../../store/store";
 
 const usersInitialState = {
-  users: []
+  userError: 'userError'
 }
 
 export const usersSlice  = createSlice({
@@ -14,8 +14,6 @@ export const usersSlice  = createSlice({
     },
     //to set the access token
     setUsers: (state, action) => {
-      // state.accessToken = action?.payload?.accessToken ?? null;
-      // localStorage.setItem("authToken", JSON.stringify(state.accessToken));
       console.log('Next State of Users ', current(state))
     }
   }

@@ -1,12 +1,11 @@
 import { TAccessTokenResponse } from "../features/auth/auth.types";
-// import { selectCurrentToken } from "../features/auth/authSlice"
-// import { useAppSelector } from "../store/app.hook"
+import { selectCurrentToken } from "../features/auth/authSlice"
+import { useAppSelector } from "../store/app.hook"
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { getItemFromStorage, isEmptyString } from "../helpers/util";
+import { isEmptyString } from "../helpers/util";
 
 const useAuthDetails = () => {
-  //const currentToken = useAppSelector(selectCurrentToken) as string;
-  const currentToken = getItemFromStorage('authToken');
+  const currentToken = useAppSelector(selectCurrentToken) as string;
   console.log(' currentToken ', currentToken)
   let isManager = false;
   let isAdmin = false;

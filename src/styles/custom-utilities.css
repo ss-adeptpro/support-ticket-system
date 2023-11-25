@@ -2,7 +2,7 @@
 
 @layer utilities {
   .sectionContainer {
-    @apply flex flex-col mx-auto w-full items-center gap-y-2 min-h-[300px] 
+    @apply flex flex-col mx-auto w-full items-center gap-y-2 min-h-[300px] mt-2
   }
 
   .field {
