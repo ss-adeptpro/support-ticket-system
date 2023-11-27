@@ -2,20 +2,22 @@ import { useAppSelector } from "../../store/app.hook"
 import { AppState } from "../../store/store"
 import { selectUserById } from "./usersApiSlice"
 import userStyles from "./user.module.css";
+import { memo, useState } from "react";
+import { EntityId } from "@reduxjs/toolkit";
 
-type TUserId = {
+type TUserProps = {
   userId: string | number,
-  onClick?: (event:React.MouseEvent) => void
+  onClick?: (event:React.MouseEvent<HTMLElement>, userId:Partial<EntityId>) => void
 }
 
-const User = (props: TUserId) => {
+const User = (props: TUserProps) => {
+
   const user = useAppSelector((state:AppState) => selectUserById(state, props.userId))
   const userRoles = user?.roles.join(', ');
   const activeStatus = user?.active ? 'Active' : 'Inactive';
 
   return (
-      // <tr className={userStyles.userRow} onClick={props.onClick}>
-      <tr className={userStyles.userRow} onClick={props.onClick ?? undefined}>
+      <tr className={userStyles.userRow} onClick={(event) => props.onClick?.(event, props.userId)}>
         <td className={userStyles.userCell}>{user?.username}</td>
         <td className={userStyles.userCell}>{activeStatus}</td>
         <td className={userStyles.userCell}>{userRoles}</td>
@@ -28,4 +30,6 @@ const User = (props: TUserId) => {
   )
 }
 
-export default User
+//memoized user
+const MemoizedUser = memo(User)
+export default MemoizedUser
