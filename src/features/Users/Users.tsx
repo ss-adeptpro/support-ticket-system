@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { selectUserIds, useGetUsersQuery } from "./usersApiSlice"
 import userStyles from "./user.module.css";
 import { useCallback } from "react";
+import useApiError from "../../hooks/useApiError";
 
 const Users = () => {
   const navigate = useNavigate();
@@ -14,7 +15,10 @@ const Users = () => {
     data : usersData = [], isFetching, isSuccess, isError, error, refetch
   } = useGetUsersQuery();
 
+  const errMsg = useApiError(error);
   const orderedUserIds = useAppSelector(selectUserIds)
+
+  
   
   // memoized callback to avoid re-rendering of child component (<user/>)
   const onRowClickHandler = useCallback((event:React.MouseEvent<HTMLElement>, userId:Partial<EntityId>) : void => {
@@ -26,7 +30,7 @@ const Users = () => {
   let content;
   //<div className="btn cursor-pointer" onClick={refetch}>Reload Users</div>
 	if (isFetching) content = <h1>Loading...</h1>;
-	if (isError) content = <p> Error:{error?.data.message} </p>;
+	if (isError) content = <p> Error:{errMsg} </p>;
 	if (isSuccess) {
     const usersContent =
       orderedUserIds?.length && 

@@ -16,8 +16,8 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,    //to disable error "variable is declared but its value is never read"
+    "noUnusedParameters": false, //to disable error "variable is declared but its value is never read"
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],

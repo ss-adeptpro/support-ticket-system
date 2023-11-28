@@ -46,7 +46,7 @@ const Header = () => {
           </>)
         }
 
-        {isUser && (<button className="btn" onClick={() => logoutHandler()}>Logout</button>)}
+        {isUser && (<button className="btn" onClick={logoutHandler}>Logout</button>)}
       </div>
     </div>
   )
