@@ -6,7 +6,7 @@ import { isEmptyString } from "../helpers/util";
 
 const useAuthDetails = () => {
   const currentToken = useAppSelector(selectCurrentToken) as string;
-  console.log(' currentToken ', currentToken)
+  //console.log(' currentToken ', currentToken)
   let isManager = false;
   let isAdmin = false;
   let isEmployee = false;
@@ -19,7 +19,7 @@ const useAuthDetails = () => {
 
     try {
       const decodedToken = jwtDecode<JwtPayload>(currentToken) as TAccessTokenResponse;
-      console.log('decodedToken ', decodedToken)
+      //console.log('decodedToken ', decodedToken)
       const { username, roles } = decodedToken.UserInfo;
       isManager = roles.includes("Manager");
       isAdmin = roles.includes("Admin");

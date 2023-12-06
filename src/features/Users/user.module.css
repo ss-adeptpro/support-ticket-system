@@ -6,7 +6,7 @@
 .userRow {
   @apply px-4 py-3 text-gray-900 bg-gray-200 first:rounded-tl-sm first:rounded-bl-sm last:rounded-tr-sm last:rounded-br-sm;
   @apply mb-2 capitalize text-center;
-  @apply hover:bg-red-300 cursor-pointer;
+  @apply hover:bg-primary-100 cursor-pointer;
 }
 
 .userCell {
