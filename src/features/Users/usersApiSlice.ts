@@ -53,7 +53,6 @@ export const usersApiSlice = usersApiWithTag.injectEndpoints({
 				} else return [{ type: USER_TAG, id: USER_LIST_TAG }]
 			}
     }),
-
     addNewUser: builder.mutation({
 			query: initialUserData => ({
 				url: '/users',
@@ -71,7 +70,10 @@ export const usersApiSlice = usersApiWithTag.injectEndpoints({
 				method: 'DELETE',
 				body: { id },
 			}),
-			invalidatesTags: (result, error, arg) => [
+			//invalidate cache only if mutation is successful.
+			invalidatesTags: (result, error, arg) => 
+				error ? [] :
+				[
 				{
 					type: USER_TAG,
 					id: arg.id,
@@ -85,7 +87,8 @@ export const usersApiSlice = usersApiWithTag.injectEndpoints({
 				method: 'PATCH',
 				body: { ...initialUserData },
 			}),
-			invalidatesTags: (result, error, arg) => [
+			//invalidate cache only if mutation is successful.
+			invalidatesTags: (result, error, arg) => error ? [] : [
 				{
 					type: USER_TAG,
 					id: arg.id,
