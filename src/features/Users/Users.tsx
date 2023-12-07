@@ -125,7 +125,7 @@ const Users = () => {
 
       content = (
         <div className="flex items-center justify-center w-3/4">
-          
+          <UserDeleteDialog ref={userDeleteDialogRef} onUserDelete = {onUserDeleteHandler}/>
           {contextMenu}
           <table className="text-sm border-separate border-spacing-y-2 w-full">
             <thead className="">
