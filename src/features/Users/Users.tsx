@@ -2,52 +2,138 @@ import { EntityId } from "@reduxjs/toolkit";
 import { useAppSelector } from "../../store/app.hook";
 import User from "./User";
 import { useNavigate } from "react-router";
-import { selectUserIds, useGetUsersQuery } from "./usersApiSlice"
+import { selectUserIds, useDeleteUserMutation, useGetUsersQuery } from "./usersApiSlice"
 import userStyles from "./user.module.css";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import useApiError from "../../hooks/useApiError";
+import { Menu, Item, Separator, Submenu, useContextMenu, ItemParams } from 'react-contexify';
+import 'react-contexify/ReactContexify.css';
 
+import UserDeleteDialog from "./UserDeleteDialog";
+import { TUserDeleteDialogRef, TUserOptionData, TUserOptionsProps } from "./users.types";
+
+
+//Users Component
 const Users = () => {
+
   const navigate = useNavigate();
 
-  //assign a default empty array to data in case it's undefined, and we always have an array to sort on
+  //Open the dialog from parent (so to have only one instance of dialog)
+  const userDeleteDialogRef = useRef<TUserDeleteDialogRef>(null);
+
+  //fetch all users
   const {
-    data : usersData = [], isFetching, isSuccess, isError, error, refetch
+    isFetching, isSuccess, isError, error
   } = useGetUsersQuery();
+  const orderedUserIds = useAppSelector(selectUserIds);
+
+  const [
+		deleteUser,
+		{ isError: isDelError, error: delError }
+	] = useDeleteUserMutation();
 
   const errMsg = useApiError(error);
-  const orderedUserIds = useAppSelector(selectUserIds)
+
 
   
-  
   // memoized callback to avoid re-rendering of child component (<user/>)
-  const onRowClickHandler = useCallback((event:React.MouseEvent<HTMLElement>, userId:Partial<EntityId>) : void => {
+  // redirect to user details page
+  const gotoUserDetailsPage = useCallback((event:React.MouseEvent<HTMLElement>, userId:Partial<EntityId>) : void => {
     event.stopPropagation();
     navigate(`/users/${userId}`);
-  }, []);   //function will never be recreated as empty array is passed
-  
+  }, []);   //function will never be recreated as empty array is passed  
+
+
+  /* SStart --- Context menu */
+  //##################################
+      const MENU_ID = `user_options`;
+      const { show } = useContextMenu({
+        id: MENU_ID,
+      });      
+      
+      //open menu on left click of 'actions' button
+      const onActionsUserClickedHandler = useCallback((event:React.MouseEvent<HTMLElement>, userId:Partial<EntityId>, userName:string) : void => {
+        event.stopPropagation();    
+        if (event.type === 'click') {
+          show({
+            event,
+            props: {
+                key: 'value',
+                userId: userId,
+                userName
+            }
+          })
+        }
+      }, []);   //function will never be recreated as empty array is passed
+      
+      //when user clicks on the different options given in action's context menu
+      const handleContextMenuItemClick = ({ id, event, props, data, triggerEvent }: ItemParams<TUserOptionsProps, TUserOptionData>) => {
+        switch (id) {
+          case "userDetails":
+            navigate(`/users/${props?.userId}`);
+            break;
+          case "userTickets":
+            console.log(id, event, props)
+            break;
+          case "userDelete":
+            console.log(id, event, props);
+            userDeleteDialogRef.current?.openDialog(props?.userId as string,  props?.userName as string)
+            break;
+          case "userEdit":
+            console.log(id, event, props)
+            break;
+        }
+      }
+
+      //menu options
+      const contextMenu = (
+        <Menu id={MENU_ID} theme="sts" className={userStyles.stsContextMenu}>
+          <Item id="userEdit" onClick={handleContextMenuItemClick}>Edit</Item>
+          <Item id="userDelete" onClick={handleContextMenuItemClick}>Delete</Item>
+          <Separator />
+          {/* <Item disabled>Disabled</Item>
+          <Separator /> */}
+          <Submenu label="Details">
+            <Item id="userDetails" onClick={handleContextMenuItemClick}>User's Details</Item>
+            <Item id="userTickets" onClick={handleContextMenuItemClick}>User's Tickets</Item>
+          </Submenu>
+        </Menu>
+      )
+
+  //####################################
+  /* EEND --- Context menu */
+
+  //delete user
+  const onUserDeleteHandler = async (event:React.MouseEvent<HTMLElement>, userId:string) => {
+    event.stopPropagation();
+    console.log('userid ', userId)
+  }
 
   let content;
   //<div className="btn cursor-pointer" onClick={refetch}>Reload Users</div>
 	if (isFetching) content = <h1>Loading...</h1>;
 	if (isError) content = <p> Error:{errMsg} </p>;
 	if (isSuccess) {
+    /* Due to entityAdapter in slice - 
+      data returned is in format: {entities, ids}
+    */
     const usersContent =
       orderedUserIds?.length && 
       orderedUserIds.map((userId: Partial<EntityId>) => 
-        <User key={userId} userId={userId} onClick = {onRowClickHandler}/>
+        <User key={userId} userId={userId} onRowClick = {gotoUserDetailsPage} onActionsUserClicked = {onActionsUserClickedHandler} />
       );
 
       content = (
-
         <div className="flex items-center justify-center w-3/4">
+          
+          {contextMenu}
           <table className="text-sm border-separate border-spacing-y-2 w-full">
             <thead className="">
               <tr>
                 <th className={userStyles.headingCol}>Name</th>
                 <th className={userStyles.headingCol}>Status</th>
                 <th className={userStyles.headingCol}>Roles</th>
-                <th className={userStyles.headingCol}>Options</th>
+                <th className={userStyles.headingCol}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -57,11 +143,7 @@ const Users = () => {
         </div>
       )
   }
-  /*
-  Due to entityAdapter in slice - 
-  data returned is in format: {entities, ids}
-  */
-  
+    
   return (
     <>
       {content}
