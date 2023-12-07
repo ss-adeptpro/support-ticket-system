@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router";
 import { useAppDispatch } from "../../store/app.hook";
 import { useLoginMutation } from "../auth/authApiSlice";
-import { setCredentials } from "../auth/authSlice";
+import useApiError from "../../hooks/useApiError";
 
 //TODO: error message
 const Login = () => {
   const [login, response ] = useLoginMutation();
-  const {data: loginResponse, error: loginError, isError: isLoginError, isLoading, isSuccess} = response;
+  const {data: loginResponse, error: loginError, isError: isLoginError, isLoading, isSuccess} = response;  
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -14,8 +14,8 @@ const Login = () => {
   //CORS:                 err is       {status: 'FETCH_ERROR', error: 'TypeError: Failed to fetch'}
   //CORS invalid origin:  response is  data: {message: 'Not allowed by CORS'}
 
-  const loginHandler = async (e:React.MouseEvent<HTMLButtonElement>) => {
-    console.log(e);
+  //e:React.MouseEvent<HTMLButtonElement>
+  const loginHandler = async () => {
     try {
       const { accessToken } = await login({
         username: 'sandeep',
@@ -24,17 +24,16 @@ const Login = () => {
       .unwrap();  //to catch errors, if any
       //dispatch this action either from here or from authSlice
       //dispatch(setCredentials({ accessToken }));
-
       
       //go to dashboard page
       navigate("/dashboard");
     } catch (err) {
-      console.log('err ', err);
+      //console.log('login error ', err);
     }
   }
   return (
     <>
-    <button className="btn" onClick={(e) => loginHandler(e)}>Login</button>
+    <button className="btn" onClick={loginHandler}>Login</button>
     </>
   )
 }

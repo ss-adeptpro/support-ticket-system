@@ -19,7 +19,7 @@ const Header = () => {
   }  
 
   return (
-    <div className="p-2 flex gap-4 items-center justify-between bg-red-400 text-white">
+    <div className="p-2 flex gap-4 items-center justify-between bg-primary-500 text-white">
       <div className="logo">
         <CustomLink to="/" className="font-bold text-2xl flex flex-col items-center">
           <span>Incident Support</span>
