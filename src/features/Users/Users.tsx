@@ -12,6 +12,7 @@ import 'react-contexify/ReactContexify.css';
 import UserDeleteDialog from "./UserDeleteDialog";
 import { TUserDeleteDialogRef, TUserOptionData, TUserOptionsProps } from "./users.types";
 import Alert from "../../components/Alert/Alert";
+import { isApiResponse } from "../../helpers/api.error.util";
 
 
 //Users Component to list users
@@ -34,7 +35,6 @@ const Users = () => {
 	] = useDeleteUserMutation();
   
   const errMsg = useApiError(error);
-  
   // memoized callback to avoid re-rendering of child component (<user/>)
   // redirect to user details page
   const gotoUserDetailsPage = useCallback((event:React.MouseEvent<HTMLElement>, userId:Partial<EntityId>) : void => {
@@ -90,23 +90,27 @@ const Users = () => {
 
   //####################################
   /* SSTART --- user actions */
-
-  //delete user
+  
+  /**
+   * Delete a user
+   * @param event 
+   * @param userId string
+   */
   const onUserDeleteHandler = async (event:React.MouseEvent<HTMLElement>, userId:string) => {
     event.stopPropagation();
-    console.log('userid ', userId);
     try {
       await deleteUser({id: userId}).unwrap();
-    } catch (deleteError) {
-      console.log('deleteError ', deleteError);
-      <Alert></Alert>
-    } finally {
-      userDeleteDialogRef.current?.closeDialog();
+      userDeleteDialogRef.current?.deleteAlert(true, 'User deleted successfully');
+    } catch (deleteError: unknown) {
+      const deleteErrorMsg = isApiResponse(deleteError) ? deleteError?.data?.message : '';
+      const errMsg =  `Sorry, can't delete this user. ` + deleteErrorMsg;
+      userDeleteDialogRef.current?.deleteAlert(false, errMsg);
     }
   }
 
   /* EEND --- user actions */
   //####################################  
+  
   let content;
   //<div className="btn cursor-pointer" onClick={refetch}>Reload Users</div>
 	if (isFetching) content = <h1>Loading...</h1>;
@@ -139,7 +143,7 @@ const Users = () => {
 
       content = (
         <div className="flex items-center justify-center w-3/4">
-          <UserDeleteDialog ref={userDeleteDialogRef} onUserDelete = {onUserDeleteHandler}/>
+          <UserDeleteDialog ref={userDeleteDialogRef} onUserDelete = {onUserDeleteHandler} />
           {contextMenu}
           <table className="text-sm border-separate border-spacing-y-2 w-full">
             <thead className="">

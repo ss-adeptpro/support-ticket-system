@@ -22,6 +22,7 @@ export type TUserOptionData = any;
 export type TUserDeleteDialogRef = {
   openDialog: (userId: string, userName:string) => void,
   closeDialog: () => void,
+  deleteAlert : (isSuccess: boolean, message: string) => void
 }
 
 export type TUserDeleteDialogProps = {

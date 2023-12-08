@@ -26,3 +26,7 @@
   --contexify-arrow-color: #6f6e77;
   --contexify-activeArrow-color: #fff; */
 }
+
+.disableUserDialog {
+  @apply pointer-events-none opacity-70
+}
