@@ -11,8 +11,8 @@ import 'react-contexify/ReactContexify.css';
 
 import UserDeleteDialog from "./UserDeleteDialog";
 import { TUserDeleteDialogRef, TUserOptionData, TUserOptionsProps } from "./users.types";
-import Alert from "../../components/Alert/Alert";
 import { isApiResponse } from "../../helpers/api.error.util";
+import { USER_DELETE_FAILURE, USER_DELETE_SUCCESS } from "./users.constants";
 
 
 //Users Component to list users
@@ -100,10 +100,10 @@ const Users = () => {
     event.stopPropagation();
     try {
       await deleteUser({id: userId}).unwrap();
-      userDeleteDialogRef.current?.deleteAlert(true, 'User deleted successfully');
+      userDeleteDialogRef.current?.deleteAlert(true, USER_DELETE_SUCCESS);
     } catch (deleteError: unknown) {
       const deleteErrorMsg = isApiResponse(deleteError) ? deleteError?.data?.message : '';
-      const errMsg =  `Sorry, can't delete this user. ` + deleteErrorMsg;
+      const errMsg =  USER_DELETE_FAILURE + ' ' + deleteErrorMsg;
       userDeleteDialogRef.current?.deleteAlert(false, errMsg);
     }
   }
