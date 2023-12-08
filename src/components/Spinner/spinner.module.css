@@ -1,0 +1,7 @@
+.spinner {
+  @apply flex justify-center items-center gap-1
+}
+
+.animateSpinner {
+  @apply animate-spin
+}
