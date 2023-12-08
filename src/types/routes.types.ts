@@ -11,6 +11,7 @@ export const routes = {
   REGISTER: 'register',
   DASHBOARD: 'dashboard',
   USERS: 'users',
+  NEW_USER: 'newUser',
   TICKETS: 'tickets',
   LOGOUT: 'logout'
 }

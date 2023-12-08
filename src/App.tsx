@@ -12,6 +12,8 @@ import { routes } from "./types/routes.types";
 import { admins, allUsers } from "./features/auth/auth.types";
 import DashboardLayout from "./features/Dashboard/DashboardLayout";
 import Aboutus from "./features/Dashboard/Aboutus";
+import NewUser from "./features/Users/NewUser";
+import UsersLayout from "./features/Users/UsersLayout";
 
 function App() {
   
@@ -35,7 +37,10 @@ function App() {
                     element={
                       <RequiredAuth allowedRoles={admins} />
                     }>
-                  <Route path={routes.USERS} element={<Users />} />
+                  <Route path={`${routes.USERS}/*`} element={<UsersLayout />}>
+                    <Route index element={<Users />} />
+                    <Route path={routes.NEW_USER} element={<NewUser />} />
+                  </Route>
                   <Route path={routes.TICKETS} element={<Tickets />} />
                 </Route>
 

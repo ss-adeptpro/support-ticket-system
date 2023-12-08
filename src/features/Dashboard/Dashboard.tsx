@@ -6,7 +6,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const onNewTicketClicked = () => navigate('/dashboard/tickets/new');
-	const onNewUserClicked = () => navigate('/dashboard/users/new');
+	const onNewUserClicked = () => navigate('/dashboard/users/newUser');
 	const onTicketsClicked = () => navigate('/dashboard/tickets');
 	const onUsersClicked = () => navigate('/dashboard/users');
 

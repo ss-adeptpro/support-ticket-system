@@ -25,7 +25,8 @@ const User = (props: TUserProps) => {
   }
 */
   return (
-      <tr className={userStyles.userRow} onClick={(event) => props.onRowClick?.(event, props.userId)}>
+      // <tr className={userStyles.userRow} onClick={(event) => props.onRowClick?.(event, props.userId)}>
+      <tr className={userStyles.userRow}>
         <td className={userStyles.userCell}>{user?.username}</td>
         <td className={userStyles.userCell}>{activeStatus}</td>
         <td className={userStyles.userCell}>{userRoles}</td>
